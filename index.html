@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Campus Placement Eligibility Screener</title>
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background: #f1f5f9;
+      color: #1e293b;
+    }
+
+    header {
+      background: linear-gradient(135deg, #1d4ed8, #4338ca);
+      color: white;
+      text-align: center;
+      padding: 30px 15px;
+    }
+
+    header h1 {
+      margin: 0 0 10px;
+      font-size: 27px;
+    }
+
+    header p {
+      margin: 0;
+      font-size: 15px;
+    }
+
+    .container {
+      max-width: 650px;
+      margin: 25px auto;
+      padding: 25px;
+      background: white;
+      border-radius: 14px;
+      box-shadow: 0 5px 20px #00000012;
+    }
+
+    h2 {
+      color: #1d4ed8;
+      margin-top: 0;
+    }
+
+    .field {
+      margin-bottom: 17px;
+    }
+
+    label {
+      display: block;
+      font-weight: bold;
+      margin-bottom: 7px;
+    }
+
+    input, select {
+      width: 100%;
+      padding: 12px;
+      border: 1px solid #cbd5e1;
+      border-radius: 7px;
+      font-size: 15px;
+      background: white;
+    }
+
+    button {
+      width: 100%;
+      padding: 13px;
+      background: #2563eb;
+      color: white;
+      border: none;
+      border-radius: 7px;
+      font-size: 16px;
+      font-weight: bold;
+      cursor: pointer;
+    }
+
+    button:hover {
+      background: #1d4ed8;
+    }
+
+    #result {
+      display: none;
+      margin-top: 22px;
+      padding: 18px;
+      border-radius: 8px;
+      line-height: 1.6;
+    }
+
+    .eligible {
+      background: #dcfce7;
+      color: #166534;
+      border: 1px solid #86efac;
+    }
+
+    .not-eligible {
+      background: #fee2e2;
+      color: #991b1b;
+      border: 1px solid #fca5a5;
+    }
+
+    .note {
+      font-size: 13px;
+      color: #64748b;
+      margin-top: 18px;
+      line-height: 1.5;
+    }
+
+    footer {
+      text-align: center;
+      padding: 20px;
+      color: #64748b;
+      font-size: 13px;
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <h1>Campus Placement Screener</h1>
+    <p>Check your eligibility for campus placement drives</p>
+  </header>
+
+  <main class="container">
+    <h2>Student Details</h2>
+
+    <form id="eligibilityForm">
+      <div class="field">
+        <label for="name">Student Name</label>
+        <input type="text" id="name" placeholder="Enter your name" required>
+      </div>
+
+      <div class="field">
+        <label for="studentId">Student ID</label>
+        <input type="text" id="studentId" placeholder="Enter student ID" required>
+      </div>
+
+      <div class="field">
+        <label for="branch">Branch</label>
+        <select id="branch" required>
+          <option value="">Select your branch</option>
+          <option value="CSE">Computer Science (CSE)</option>
+          <option value="IT">Information Technology (IT)</option>
+          <option value="ECE">Electronics (ECE)</option>
+          <option value="EEE">Electrical (EEE)</option>
+          <option value="ME">Mechanical (ME)</option>
+          <option value="CE">Civil (CE)</option>
+          <option value="Other">Other</option>
+        </select>
+      </div>
+
+      <div class="field">
+        <label for="cgpa">CGPA (0 to 10)</label>
+        <input type="number" id="cgpa" min="0" max="10"
+          step="0.01" placeholder="e.g. 7.5" required>
+      </div>
+
+      <div class="field">
+        <label for="backlogs">Number of Active Backlogs</label>
+        <input type="number" id="backlogs" min="0" step="1"
+          value="0" required>
+      </div>
+
+      <div class="field">
+        <label for="tenth">10th Percentage</label>
+        <input type="number" id="tenth" min="0" max="100"
+          step="0.01" placeholder="e.g. 80" required>
+      </div>
+
+      <div class="field">
+        <label for="twelfth">12th / Diploma Percentage</label>
+        <input type="number" id="twelfth" min="0" max="100"
+          step="0.01" placeholder="e.g. 75" required>
+      </div>
+
+      <button type="submit">Check Eligibility</button>
+    </form>
+
+    <div id="result" role="status" aria-live="polite"></div>
+
+    <p class="note">
+      Note: This demo uses sample eligibility criteria:
+      CGPA of at least 6.0, no active backlogs, and at least
+      60% in both 10th and 12th/Diploma. Actual company criteria
+      may differ. This demo does not save student information.
+    </p>
+  </main>
+
+  <footer>
+    Campus Placement Eligibility Screener | Student Project
+  </footer>
+
+  <script>
+    const form = document.getElementById("eligibilityForm");
+    const result = document.getElementById("result");
+
+    form.addEventListener("submit", function(event) {
+      event.preventDefault();
+
+      const name = document.getElementById("name").value.trim();
+      const studentId = document.getElementById("studentId").value.trim();
+      const branch = document.getElementById("branch").value;
+      const cgpa = Number(document.getElementById("cgpa").value);
+      const backlogs = Number(document.getElementById("backlogs").value);
+      const tenth = Number(document.getElementById("tenth").value);
+      const twelfth = Number(document.getElementById("twelfth").value);
+
+      if (
+        !name || !studentId || !branch ||
+        !Number.isFinite(cgpa) || cgpa < 0 || cgpa > 10 ||
+        !Number.isInteger(backlogs) || backlogs < 0 ||
+        !Number.isFinite(tenth) || tenth < 0 || tenth > 100 ||
+        !Number.isFinite(twelfth) || twelfth < 0 || twelfth > 100
+      ) {
+        result.className = "not-eligible";
+        result.textContent = "Please enter valid details in all fields.";
+        result.style.display = "block";
+        return;
+      }
+
+      const reasons = [];
+
+      if (cgpa < 6.0) reasons.push("CGPA is below 6.0");
+      if (backlogs > 0) reasons.push("Active backlogs must be zero");
+      if (tenth < 60) reasons.push("10th percentage is below 60%");
+      if (twelfth < 60) reasons.push("12th/Diploma percentage is below 60%");
+
+      result.style.display = "block";
+
+      if (reasons.length === 0) {
+        result.className = "eligible";
+        result.textContent =
+          "Congratulations, " + name +
+          "! You meet the sample eligibility criteria. " +
+          "Student ID: " + studentId +
+          ". Branch: " + branch + ".";
+      } else {
+        result.className = "not-eligible";
+        result.textContent =
+          "Hello, " + name +
+          ". You do not meet the sample eligibility criteria. " +
+          "Reasons: " + reasons.join("; ") + ".";
+      }
+
+      result.scrollIntoView({ behavior: "smooth", block: "nearest" });
+    });
+  </script>
+
+</body>
+</html>
